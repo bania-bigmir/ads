@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Ad;
-
+use Auth;
 use Illuminate\Http\Request;
 
 class AdController extends Controller
@@ -56,7 +56,7 @@ class AdController extends Controller
     public function show($id)
     {
         $ad=$this->ad->find($id);
-        return view();
+        return view('show_ad')->withAd($ad);
     }
 
     /**
@@ -89,7 +89,15 @@ class AdController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //
+    {        
+         $ad=$this->ad->find($id);
+         
+         if($ad->user->id == Auth::id()){
+         $ad->delete();
+         return redirect('/');
+         }else{
+             return redirect()->intended('/')->withErrors(['You do not have access to perform an action']);
+         }
+         
     }
 }

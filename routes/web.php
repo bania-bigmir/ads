@@ -14,5 +14,6 @@
 Route::get('/', ['uses'=>'AdController@index','as'=>'home']);
 Route::get('/{id}','AdController@show');
 
+Route::post('delete/{id}','AdController@destroy');
 Route::post('login','Auth\LoginController@login');
-Route::get('logout', 'Auth\LoginController@logout');
+Route::post('logout', 'Auth\LoginController@logout');

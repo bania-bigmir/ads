@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\User;
@@ -12,30 +11,37 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 class LoginController extends Controller
 {
     /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
+      |--------------------------------------------------------------------------
+      | Login Controller
+      |--------------------------------------------------------------------------
+      |
+      | This controller handles authenticating users for the application and
+      | redirecting them to your home screen. The controller uses a trait
+      | to conveniently provide its functionality to your applications.
+      |
+     */
 
-    use AuthenticatesUsers;
+use AuthenticatesUsers;
 
-    
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
     public function username()
     {
-        return 'name';
+        return 'username';
     }
-    
+
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected function redirectTo()
+    {
+        ;
+    }
 
     /**
      * Create a new controller instance.
@@ -46,7 +52,7 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-    
+
     /**
      * Handle a login request to the application.
      *
@@ -56,29 +62,21 @@ class LoginController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function login(Request $request)
-    {        
+    {
         $this->validate($request, [
-        'username' => 'required|max:255',
-        'password' => 'required',
-    ]);
-        
-        
-        
-       // $user = new User;
-       // $users=$user->all();
+            'username' => 'required|max:255',
+            'password' => 'required',
+        ]);
 
-        
-            if (Auth::attempt(['username' => $request->input('username'), 'password' => $request->input('password')])) {
-                
+        if (Auth::attempt(['username' => $request->input('username'), 'password' => $request->input('password')])) {
+
             return redirect()->intended('/');
-        }            
-                
+        }
 
-    return $this->create($request);
 
-         
+        return $this->create($request);
     }
-    
+
     /**
      * Create a new user instance after a valid registration.
      *
@@ -88,20 +86,27 @@ class LoginController extends Controller
     protected function create($request)
     {
         $this->validate($request, [
-        'username' => 'required|unique:users|max:255',
-        'password' => 'required',
-    ]);
-        
-         $user=User::create([
-            'username' => $request->input('username'),            
-            'password' => Hash::make($request->input('password')),
+            'username' => 'required|unique:users|max:255',
+            'password' => 'required',
         ]);
-         Auth::login($user);
-         return redirect()->intended('/');
+
+        $user = User::create([
+                'username' => $request->input('username'),
+                'password' => Hash::make($request->input('password')),
+        ]);
+        Auth::login($user);
+        return redirect()->intended('/');
     }
-    public function logout(){
-     
-Auth::logout();
-  return redirect('/');
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout()
+    {
+        Auth::logout();
+        return redirect(url()->previous());
     }
 }
