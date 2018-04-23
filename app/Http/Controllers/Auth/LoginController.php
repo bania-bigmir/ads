@@ -105,6 +105,6 @@ use AuthenticatesUsers;
     public function logout()
     {
         Auth::logout();
-        return redirect(url()->previous());
+        return redirect('/');
     }
 }

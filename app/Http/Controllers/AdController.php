@@ -71,7 +71,11 @@ class AdController extends Controller
     public function show($id)
     {
         $ad = $this->ad->find($id);
+        if($ad){
         return view('show_ad')->withAd($ad);
+        }else{
+            return redirect(url()->previous())->withErrors(['The ad is no longer available or has been deleted']);
+        }
     }
 
     /**
@@ -82,8 +86,12 @@ class AdController extends Controller
      */
     public function edit($id)
     {
+        if (Auth::check()) {
         $ad = $this->ad->find($id);
         return view('create_ad')->withAd($ad);
+        }else{
+            return redirect(url()->previous())->withErrors(['Register or login to create an ad']);
+        }
     }
 
     /**

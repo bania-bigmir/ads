@@ -12,16 +12,14 @@
 */
 
 Route::get('/', ['uses'=>'AdController@index','as'=>'home']);
+
 Route::get('/edit','AdController@create');
 Route::post('/edit',['middleware' => 'auth', 'uses' => 'AdController@store','as'=>'update']);
-Route::get('/edit/{id}',['middleware' => 'auth', 'uses' => 'AdController@edit']);
+Route::get('/edit/{id}', 'AdController@edit');
+
 Route::put('/edit/{id}',['middleware' => 'auth', 'uses' => 'AdController@update']);
-
-Route::get('/{id}','AdController@show');
-
-//Route::post('/','AdController@store');
-
 Route::post('delete/{id}','AdController@destroy');
+Route::get('/{id}','AdController@show');
 
 Route::post('login','Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout');
