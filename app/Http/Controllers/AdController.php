@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Ad;
@@ -8,21 +7,22 @@ use Illuminate\Http\Request;
 
 class AdController extends Controller
 {
- 
+
     protected $ad;
+
     public function __construct()
     {
-        $this->ad=new Ad;
+        $this->ad = new Ad;
         $this->ad->load('user');
     }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {       
-        
+    {
         return view('index')->withAds($this->ad->paginate(5));
     }
 
@@ -33,7 +33,11 @@ class AdController extends Controller
      */
     public function create()
     {
-        //
+        if (Auth::check()) {
+            return view('create_ad');
+        } else {
+            return redirect(url()->previous())->withErrors(['Register or login to create an ad']);
+        }
     }
 
     /**
@@ -44,7 +48,18 @@ class AdController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required|max:255',
+            'description' => 'required',
+        ]);
+
+        $this->ad->title = $request->title;
+        $this->ad->description = $request->description;
+        $this->ad->user_id = Auth::id();
+        $this->ad->save();
+        $request->session()->flash('success', 'The ad was created!');
+
+        return redirect($this->ad->id);
     }
 
     /**
@@ -55,7 +70,7 @@ class AdController extends Controller
      */
     public function show($id)
     {
-        $ad=$this->ad->find($id);
+        $ad = $this->ad->find($id);
         return view('show_ad')->withAd($ad);
     }
 
@@ -67,7 +82,8 @@ class AdController extends Controller
      */
     public function edit($id)
     {
-        //
+        $ad = $this->ad->find($id);
+        return view('create_ad')->withAd($ad);
     }
 
     /**
@@ -79,7 +95,18 @@ class AdController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $ad = $this->ad->find($id);
+
+        if ($ad->user->id == Auth::id()) {
+            $ad->title = $request->title;
+            $ad->description = $request->description;
+            $ad->save();
+            $request->session()->flash('success', 'Ad edited successfully!');
+
+            return redirect($ad->id);
+        } else {
+            return redirect(url()->previous())->withErrors(['You do not have permission to edit this ad']);
+        }
     }
 
     /**
@@ -88,16 +115,17 @@ class AdController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {        
-         $ad=$this->ad->find($id);
-         
-         if($ad->user->id == Auth::id()){
-         $ad->delete();
-         return redirect('/');
-         }else{
-             return redirect()->intended('/')->withErrors(['You do not have access to perform an action']);
-         }
-         
+    public function destroy(Request $request, $id)
+    {
+        $ad = $this->ad->find($id);
+
+        if ($ad->user->id == Auth::id()) {
+            $ad->delete();
+            $request->session()->flash('success', 'The ad was deleted!');
+
+            return redirect(url()->previous());
+        } else {
+            return redirect(url()->previous())->withErrors(['You do not have access to perform an action']);
+        }
     }
 }

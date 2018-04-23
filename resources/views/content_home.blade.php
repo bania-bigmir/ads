@@ -8,15 +8,24 @@
         </h3> 
         <div class="mb-1 text-muted">{{$ad->created_at->format('M d, Y H:i:s')}} by {{$ad->user->username}}</div>
         <p class="card-text mb-auto">{{$ad->description}}</p>
-        <div class="btn-group" role="group">            
-            <a href="{{url($ad->id)}}" class="btn btn-outline-info">Continue reading</a>            
-           
-                @if($ad->user->id == Auth::id())
+        <div class="row">
+            <div class="col-md-6">
+                <a href="{{url($ad->id)}}" class="btn btn-outline-info">Continue reading</a>            
+            </div>
+
+            @if($ad->user->id == Auth::id())
+            <div class="col-md-3">
+                {!! Form::open(['url' => "/edit/$ad->id",'method' => 'get']) !!}
+                {!!Form::submit('edit',['class' => 'btn btn-outline-warning']);!!}
+                {!! Form::close() !!}
+            </div>
+            <div class="col-md-3">
                 {!! Form::open(['url' => "/delete/$ad->id",'method' => 'POST']) !!}
                 {!!Form::submit('delete',['class' => 'btn btn-outline-danger']);!!}
                 {!! Form::close() !!}
-                @endif    
-                
+            </div>
+            @endif    
+
         </div>
     </div>  
 </div>

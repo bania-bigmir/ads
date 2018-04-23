@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('content')
-@include('form_create') 
+@include('create_form') 
 @endsection
 
 @section('rightBar')

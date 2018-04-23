@@ -38,10 +38,8 @@ use AuthenticatesUsers;
      *
      * @var string
      */
-    protected function redirectTo()
-    {
-        ;
-    }
+    protected  $redirectTo = '/';
+    
 
     /**
      * Create a new controller instance.
@@ -70,7 +68,7 @@ use AuthenticatesUsers;
 
         if (Auth::attempt(['username' => $request->input('username'), 'password' => $request->input('password')])) {
 
-            return redirect()->intended('/');
+            return redirect(url()->previous());
         }
 
 

@@ -1,6 +1,8 @@
 @if(Auth::check())
 
-<p>Hello, {{Auth::user()->username}}</p>
+<strong> {{Auth::user()->username}}</strong>
+<br/>
+<br/>
 {!! Form::open(['url' => '/logout','method' => 'POST']) !!}
 {!!Form::submit('Logout',['class' => 'btn btn-outline-success']);!!}
 {!! Form::close() !!}
