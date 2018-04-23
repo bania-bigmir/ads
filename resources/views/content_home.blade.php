@@ -1,4 +1,4 @@
-@if($ads)
+@if(count($ads)>0)
 <div class="page-header"><h2>List of ads</h2></div>
 @foreach($ads as $ad)
 
