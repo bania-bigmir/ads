@@ -1,4 +1,5 @@
 @if($ads)
+<div class="page-header"><h2>List of ads</h2></div>
 @foreach($ads as $ad)
 
 <div class="card flex-md-row mb-4 box-shadow h-md-250">
@@ -32,6 +33,8 @@
 
 @endforeach
 {{$ads->render()}}
+@else
+<h1><small>There are no ads yet. Be the first to create it</small></h1>
 @endif
 
 
